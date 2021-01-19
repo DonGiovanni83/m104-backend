@@ -20,16 +20,16 @@ class SchulenRepository(BaseRepository):
                     SchulenRepository()
         return SchulenRepository.__instance
 
-    async def create(self, name, schule_id) -> Schule:
+    async def create(self, name, adresse_id) -> Schule:
         async with database.get_session() as session:
             async with session.begin():
                 sch = await session.query(Schule).filter(
                     Schule.name == name,
-                    Schule.Schule_id == schule_id
+                    Schule.adresse_id == adresse_id
                 ).scalar()
 
                 if sch is None:
-                    new_schule = Schule(name, schule_id)
+                    new_schule = Schule(name, adresse_id)
                     sch = await session.add(new_schule)
 
                 return sch

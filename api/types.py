@@ -1,17 +1,6 @@
 import graphene
 
 
-class Firma(graphene.ObjectType):
-    id = graphene.ID()
-    name = graphene.String()
-    adresse = graphene.Field(Adresse)
-
-
-class Person(graphene.ObjectType):
-    id = graphene.ID()
-    name = graphene.String()
-    vorname = graphene.String()
-    adresse = graphene.Field(Adresse)
 
 
 class ABV(graphene.ObjectType):

@@ -1,7 +1,7 @@
 import graphene
 
 from api.types.modul import Modul
-from api.types.modul.mapper import ModulMapper
+from api.types.firma.mapper import ModulMapper
 from repositories.module_repository import ModuleRepository
 
 
