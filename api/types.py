@@ -1,14 +1,6 @@
 import graphene
 
 
-
-
-class ABV(graphene.ObjectType):
-    id = graphene.ID()
-    person = graphene.Field(Person)
-    firma = graphene.Field(Firma)
-
-
 class Schueler(graphene.ObjectType):
     id = graphene.ID()
     schueler_id = graphene.ID()

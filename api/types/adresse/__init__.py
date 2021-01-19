@@ -2,7 +2,7 @@ import graphene
 
 
 class Adresse(graphene.ObjectType):
-    aid = graphene.ID()
+    id = graphene.ID()
     ort = graphene.String()
     plz = graphene.Int()
     adresse_1 = graphene.String()

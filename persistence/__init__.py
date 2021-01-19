@@ -65,7 +65,7 @@ class ABV(Person):
 
 
 class Schueler(Person):
-    __tablename__ = 'schueler'
+    __tablename__ = 'abv'
     id = Column(Integer, ForeignKey('personen.id'), primary_key=True)
     schueler_id = Column(Integer, unique=True)
     firma_id = Column(Integer, ForeignKey('firmen.id'))
