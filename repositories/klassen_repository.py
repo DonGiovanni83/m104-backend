@@ -4,7 +4,7 @@ from persistence import Klasse, database
 from repositories.base_repository import BaseRepository
 
 
-class KlassenRepository(BaseRepository[Klasse]):
+class KlassenRepository(BaseRepository):
     __instance = None
 
     def __init__(self):

@@ -4,7 +4,7 @@ from persistence import Modul, database
 from repositories.base_repository import BaseRepository
 
 
-class ModuleRepository(BaseRepository[Modul]):
+class ModuleRepository(BaseRepository):
     __instance = None
 
     def __init__(self):
