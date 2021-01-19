@@ -1,5 +1,3 @@
-from typing import List
-
 import strawberry
 
 
@@ -66,11 +64,4 @@ class Schueler:
     person: Person
     firma: Firma
     abv: ABV
-
-
-@strawberry.type
-class Query:
-    adressen: List[Adresse]
-
-
-schema = strawberry.Schema(query=Query)
+    klasse: Klasse

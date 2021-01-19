@@ -11,6 +11,12 @@ flask-migrate = "*"
 psycopg2-binary = "*"
 strawberry-graphql = {extras = ["debug-server"], version = "*"}
 uvicorn = "*"
+async-sqlalchemy = "*"
+asyncio = "*"
+sqlalchemy = "~=1.4.0b1"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
