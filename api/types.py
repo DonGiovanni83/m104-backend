@@ -5,10 +5,6 @@ import graphene
 
 
 
-class Modul(graphene.ObjectType):
-    id = graphene.ID()
-    name = graphene.String()
-    schule = graphene.Field(Schule)
 
 
 class Firma(graphene.ObjectType):
