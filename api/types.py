@@ -1,10 +1,4 @@
-from collections import namedtuple
-
 import graphene
-
-
-
-
 
 
 class Firma(graphene.ObjectType):

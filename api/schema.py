@@ -2,10 +2,18 @@ import graphene
 
 from api.types.adresse.mutation import CreateAdresseMutation
 from api.types.adresse.query import GetAllAdressen
+from api.types.klasse.query import GetAllKlassen
+from api.types.modul.query import GetAllModule
 from api.types.schule.query import GetAllSchulen
 
 
-class Query(GetAllAdressen, GetAllSchulen, graphene.ObjectType):
+class Query(
+    GetAllAdressen,
+    GetAllSchulen,
+    GetAllKlassen,
+    GetAllModule,
+    graphene.ObjectType
+):
     pass
 
 
