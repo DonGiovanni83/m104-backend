@@ -5,7 +5,7 @@ from api.types.abv.mapper import ABVMapper
 from repositories.abvs_repository import ABVsRepository
 
 
-class GetAllPersonen(graphene.ObjectType):
+class GetAllABVs(graphene.ObjectType):
     abvs = graphene.List(ABV)
 
     @classmethod

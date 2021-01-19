@@ -23,13 +23,13 @@ class FirmenRepository(BaseRepository):
     async def create(self, name, adresse_id) -> Firma:
         async with database.get_session() as session:
             async with session.begin():
-                sch = await session.query(Firma).filter(
+                firma = await session.query(Firma).filter(
                     Firma.name == name,
                     Firma.adresse_id == adresse_id
                 ).scalar()
 
-                if sch is None:
+                if firma is None:
                     new_firma = Firma(name, adresse_id)
-                    sch = await session.add(new_firma)
+                    firma = await session.add(new_firma)
 
-                return sch
+                return firma

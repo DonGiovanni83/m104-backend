@@ -20,7 +20,7 @@ class ABVsRepository(BaseRepository):
                     ABVsRepository()
         return ABVsRepository.__instance
 
-    async def create(self, name, person_id, firma_id) -> ABV:
+    async def create(self, person_id, firma_id) -> ABV:
         async with database.get_session() as session:
             async with session.begin():
                 abv = await session.query(ABV).filter(
@@ -29,7 +29,7 @@ class ABVsRepository(BaseRepository):
                 ).scalar()
 
                 if abv is None:
-                    new_abv = ABV( person_id, firma_id)
+                    new_abv = ABV(person_id, firma_id)
                     abv = await session.add(new_abv)
 
                 return abv
