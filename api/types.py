@@ -3,10 +3,6 @@ from collections import namedtuple
 import graphene
 
 
-class Klasse(graphene.ObjectType):
-    id = graphene.ID()
-    name = graphene.String()
-    schule = graphene.Field(Schule)
 
 
 class Modul(graphene.ObjectType):

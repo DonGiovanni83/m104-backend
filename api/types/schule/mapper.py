@@ -6,6 +6,7 @@ class SchuleMapper:
     @staticmethod
     def to_gql_schule(db_schule: DBSchule) -> Schule:
         return Schule(
+            id=db_schule.id,
             name=db_schule.name,
             adresse_id=db_schule.adresse_id
         )
