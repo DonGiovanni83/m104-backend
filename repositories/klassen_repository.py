@@ -1,18 +1,18 @@
-from typing import List
-
-from api.data import Klasse
-from repositories.abstract import AbstractKlassenRepository
+from persistence import Klasse
+from repositories.base_repository import BaseRepository
 
 
-class KlassenRepository(AbstractKlassenRepository):
-    @staticmethod
-    def get_klassen() -> List[Klasse]:
-        pass
+class KlassenRepository(BaseRepository[Klasse]):
 
-    @staticmethod
-    def create_klasse(klasse) -> int:
-        pass
+    async def create(self, klasse) -> Klasse:
+        async with self.async_session as session:
+            async with session.begin():
+                kl = await session.query(Klasse).filetr(
+                    Klasse.name == klasse.name,
+                    Klasse.schule_id == klasse.schule_id
+                ).scalar()
 
-    @staticmethod
-    def delete_klasse() -> bool:
-        pass
+                if kl is None:
+                    kl = await session.add(kl)
+
+                return kl
