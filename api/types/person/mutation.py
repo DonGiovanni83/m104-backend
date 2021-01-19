@@ -11,14 +11,14 @@ class CreatePersonMutation(graphene.Mutation):
         vorname = graphene.String()
         adresse_id = graphene.ID()
 
-    person = graphene.Field(lambda: Person)
+    create_person = graphene.Field(lambda: Person)
 
     @classmethod
     async def mutate(cls, args, context, info):
-        person = await PersonenRepository.create(
+        person = await PersonenRepository.get_instance().create(
             args.get('name', ''),
             args.get('vorname', ''),
-            args.get('adresse_id', 0000)
+            args.get('adresse_id', 0)
         )
 
         return PersonMapper.to_gql_person(person)

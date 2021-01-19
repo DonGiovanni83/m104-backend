@@ -10,13 +10,13 @@ class CreateFirmaMutation(graphene.Mutation):
         name: graphene.String()
         adresse_id: graphene.ID()
 
-    firma = graphene.Field(lambda: Firma)
+    create_firma = graphene.Field(lambda: Firma)
 
     @classmethod
     async def mutate(cls, args, context, info):
-        firma = await FirmenRepository.create(
+        firma = await FirmenRepository.get_instance().create(
             args.get('name', ''),
-            args.get('adresse_id', 0000)
+            args.get('adresse_id', 0)
         )
 
         return FirmaMapper.to_gql_firma(firma)

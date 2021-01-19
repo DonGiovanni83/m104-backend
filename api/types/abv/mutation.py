@@ -10,11 +10,11 @@ class CreateABVMutation(graphene.Mutation):
         person_id = graphene.ID()
         firma_id = graphene.ID()
 
-    abv = graphene.Field(lambda: ABV)
+    create_abv = graphene.Field(lambda: ABV)
 
     @classmethod
     async def mutate(cls, args, context, info):
-        abv = await ABVsRepository.create(
+        abv = await ABVsRepository.get_instance().create(
             args.get('person_id', 0),
             args.get('firma_id', 0)
         )

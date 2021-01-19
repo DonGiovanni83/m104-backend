@@ -1,7 +1,7 @@
 import graphene
 
 from api.types.modul import Modul
-from api.types.firma.mapper import ModulMapper
+from api.types.modul.mapper import ModulMapper
 from repositories.module_repository import ModuleRepository
 
 
@@ -10,13 +10,13 @@ class CreateModulMutation(graphene.Mutation):
         name: graphene.String()
         schule_id: graphene.ID()
 
-    modul = graphene.Field(lambda: Modul)
+    create_modul = graphene.Field(lambda: Modul)
 
     @classmethod
     async def mutate(cls, args, context, info):
-        modul = await ModuleRepository.create(
+        modul = await ModuleRepository.get_instance().create(
             args.get('name', ''),
-            args.get('schule_id', 0000)
+            args.get('schule_id', 0)
         )
 
         return ModulMapper.to_gql_modul(modul)

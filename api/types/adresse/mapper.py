@@ -6,6 +6,7 @@ class AdresseMapper:
 
     @staticmethod
     def to_gql_adresse(db_adresse: DBAdresse) -> Adresse:
+
         return Adresse(
             id=db_adresse.id,
             ort=db_adresse.ort,

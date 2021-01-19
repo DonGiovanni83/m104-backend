@@ -8,6 +8,7 @@ from api.types.klasse.query import GetAllKlassen
 from api.types.modul.query import GetAllModule
 from api.types.person.query import GetAllPersonen
 from api.types.schueler.query import GetAllSchueler
+from api.types.schule.mutation import CreateSchuleMutation
 from api.types.schule.query import GetAllSchulen
 
 
@@ -25,8 +26,8 @@ class Query(
     pass
 
 
-class Mutation(CreateAdresseMutation, graphene.ObjectType):
-    pass
+class Mutation(graphene.ObjectType):
+    create_adresse = CreateAdresseMutation.Field()
 
 
-schema = graphene.Schema(query=Query, auto_camelcase=False)
+schema = graphene.Schema(query=Query, mutation=Mutation, auto_camelcase=False)

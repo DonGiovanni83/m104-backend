@@ -1,0 +1,16 @@
+mutation CreateAdress {
+  create_adresse(input_args: {ort: "Tomorrowland", plz: 7777, adresse_1: "Captain Hook Ship", adresse_2: "Deck 2", tel_g: "123456789", tel_m: "987654321", email_1: "peter@pan.com", email_2: "wendy@pan.com"}) {
+    ok
+    adresse {
+      id
+      ort
+      plz
+      adresse_1
+      adresse_2
+      tel_g
+      tel_m
+      email_1
+      email_2
+    }
+  }
+}

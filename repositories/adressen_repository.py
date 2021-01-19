@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import Adresse, database
 from repositories.base_repository import BaseRepository
 
@@ -21,9 +23,10 @@ class AdressenRepository(BaseRepository):
         return AdressenRepository.__instance
 
     async def create(self, ort, plz, adresse_1, adresse_2, tel_g, tel_m, email_1, email_2) -> Adresse:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                addr = await session.query(Adresse).filter(
+                addr = (await session.execute(statement=select(Adresse).where(
                     Adresse.ort == ort,
                     Adresse.plz == plz,
                     Adresse.adresse_1 == adresse_1,
@@ -32,10 +35,21 @@ class AdressenRepository(BaseRepository):
                     Adresse.tel_m == tel_m,
                     Adresse.email_1 == email_1,
                     Adresse.email_2 == email_2
-                ).scalar()
+                ))).first()
 
                 if addr is None:
-                    new_addr = Adresse(ort, plz, adresse_1, adresse_2, tel_g, tel_m, email_1, email_2)
-                    addr = await session.add(new_addr)
-
-                return addr
+                    new_addr = Adresse(
+                        ort=ort,
+                        plz=plz,
+                        adresse_1=adresse_1,
+                        adresse_2=adresse_2,
+                        tel_g=tel_g,
+                        tel_m=tel_m,
+                        email_1=email_1,
+                        email_2=email_2
+                    )
+                    session.add(new_addr)
+                    await session.commit()
+                    addr = new_addr
+                session.expunge_all()
+                return addr[0]

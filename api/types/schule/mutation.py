@@ -14,9 +14,9 @@ class CreateSchuleMutation(graphene.Mutation):
 
     @classmethod
     async def mutate(cls, args, context, info):
-        schule = await SchulenRepository.create(
+        schule = await SchulenRepository.get_instance().create(
             args.get('name', ''),
-            args.get('adresse_id', 0000)
+            args.get('adresse_id', 0)
         )
 
         return SchuleMapper.to_gql_schule(schule)

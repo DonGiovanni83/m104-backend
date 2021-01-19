@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -8,10 +7,10 @@ Base = declarative_base()
 class Adresse(Base):
     __tablename__ = 'adressen'
 
-    id = Column(Integer, Sequence('addr_id_seq'), primary_key=True)
-    ort = Column(String(50))
-    plz = Column(Integer)
-    adresse_1 = Column(String(50))
+    id = Column(Integer, primary_key=True)
+    ort = Column(String(50), default="")
+    plz = Column(Integer, default=0000)
+    adresse_1 = Column(String(50), default="")
     adresse_2 = Column(String(50), nullable=True)
     tel_g = Column(String(50), nullable=True)
     tel_m = Column(String(50), nullable=True)

@@ -10,7 +10,7 @@ class CreateKlasseMutation(graphene.Mutation):
         name: graphene.String()
         schule_id: graphene.ID()
 
-    klasse = graphene.Field(lambda: Klasse)
+    create_klasse = graphene.Field(lambda: Klasse)
 
     @classmethod
     async def mutate(cls, args, context, info):
