@@ -1,11 +1,12 @@
-from persistence import Schule
+from persistence import Schule, database
 
 from repositories.base_repository import BaseRepository
 
 
 class SchulenRepository(BaseRepository[Schule]):
-    async def create(self, name, adresse_id) -> Schule:
-        async with self.async_session as session:
+    @staticmethod
+    async def create(name, adresse_id) -> Schule:
+        async with database.get_session() as session:
             async with session.begin():
                 sch = await session.query(Schule).filter(
                     Schule.name == name,

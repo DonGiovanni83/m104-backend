@@ -12,29 +12,31 @@ class BaseRepository(Generic[T], ABC):
     Generic repository with basic crud calls, which are the same for
     all entities.
     """
-    def __init__(self):
-        self.async_session = database.get_session()
 
-    async def get_all(self) -> List[T]:
-        async with self.async_session as session:
+    @staticmethod
+    async def get_all() -> List[T]:
+        async with database.get_session() as session:
             async with session.begin():
                 all_entities = await session.query(T).all()
                 return all_entities
 
-    async def find(self, entity_id) -> T:
-        async with self.async_session as session:
+    @staticmethod
+    async def find(entity_id) -> T:
+        async with database.get_session() as session:
             async with session.begin():
                 entity = await session.query(T).filetr(T.id == entity_id).scalar()
                 if entity is None:
                     raise NotFoundException()
                 return entity
 
+    @staticmethod
     @abstractmethod
-    async def create(self, *args) -> T:
+    async def create(*args) -> T:
         ...
 
-    async def delete(self, entity_id) -> bool:
-        async with self.async_session as session:
+    @staticmethod
+    async def delete(entity_id) -> bool:
+        async with database.get_session() as session:
             async with session.begin():
                 await session.delete(T).where(T.id == entity_id)
             return True

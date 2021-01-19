@@ -1,11 +1,12 @@
-from persistence import Klasse
+from persistence import Klasse, database
 from repositories.base_repository import BaseRepository
 
 
 class KlassenRepository(BaseRepository[Klasse]):
 
-    async def create(self, name, schule_id) -> Klasse:
-        async with self.async_session as session:
+    @staticmethod
+    async def create(name, schule_id) -> Klasse:
+        async with database.get_session() as session:
             async with session.begin():
                 kl = await session.query(Klasse).filetr(
                     Klasse.name == name,
