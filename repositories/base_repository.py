@@ -1,42 +1,51 @@
+import threading
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List
+from typing import List
+
+from sqlalchemy import select
 
 from persistence import database
 from persistence.NotFoundException import NotFoundException
 
-T = TypeVar('T')
 
-
-class BaseRepository(Generic[T], ABC):
+class BaseRepository(ABC):
     """
     Generic repository with basic crud calls, which are the same for
     all entities.
     """
 
-    @staticmethod
-    async def get_all() -> List[T]:
-        async with database.get_session() as session:
+    __instance = None
+    T = None
+
+    async def get_all(self) -> List[T]:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                all_entities = await session.query(T).all()
+                all_entities = await session.execute(statement=select(self.T))
                 return all_entities
 
-    @staticmethod
-    async def find(entity_id) -> T:
+    async def find(self, entity_id) -> T:
         async with database.get_session() as session:
             async with session.begin():
-                entity = await session.query(T).filetr(T.id == entity_id).scalar()
+                entity = await session.query(self.T).filetr(self.T.id == entity_id).scalar()
                 if entity is None:
                     raise NotFoundException()
                 return entity
 
-    @staticmethod
     @abstractmethod
-    async def create(*args) -> T:
+    async def create(self, *args) -> T:
         ...
 
-    @staticmethod
-    async def delete(entity_id) -> bool:
+    async def delete(self, entity_id) -> bool:
         async with database.get_session() as session:
             async with session.begin():
-                await session.delete(T).where(T.id == entity_id)
+                await session.delete(self.T).where(self.T.id == entity_id)
             return True
+
+    @staticmethod
+    @abstractmethod
+    def get_instance():
+        ...
+
+    def __init__(self, t):
+        self.T = t

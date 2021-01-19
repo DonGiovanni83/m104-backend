@@ -1,11 +1,26 @@
+import threading
+
 from persistence import Klasse, database
 from repositories.base_repository import BaseRepository
 
 
 class KlassenRepository(BaseRepository[Klasse]):
+    __instance = None
+
+    def __init__(self):
+        super().__init__(Klasse)
+        KlassenRepository.__instance = self
+        self.T = Klasse
 
     @staticmethod
-    async def create(name, schule_id) -> Klasse:
+    def get_instance():
+        if KlassenRepository.__instance is None:
+            with threading.Lock():
+                if KlassenRepository.__instance is None:
+                    KlassenRepository()
+        return KlassenRepository.__instance
+
+    async def create(self, name, schule_id) -> Klasse:
         async with database.get_session() as session:
             async with session.begin():
                 kl = await session.query(Klasse).filetr(

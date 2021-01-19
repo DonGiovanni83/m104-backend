@@ -39,8 +39,8 @@ async def create_database_async():
         echo=True
     )
     async with engine.begin() as conn:
-        conn.run_sync(persistence.Base.metadata.drop_all(engine))
-        conn.run_sync(persistence.Base.metadata.create_all(engine))
+        await conn.run_sync(persistence.Base.metadata.drop_all)
+        await conn.run_sync(persistence.Base.metadata.create_all)
 
 
 async def get_session() -> AsyncSession:
