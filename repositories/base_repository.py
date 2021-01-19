@@ -30,7 +30,7 @@ class BaseRepository(Generic[T], ABC):
                 return entity
 
     @abstractmethod
-    async def create(self, new_entity) -> T:
+    async def create(self, *args) -> T:
         ...
 
     async def delete(self, entity_id) -> bool:
