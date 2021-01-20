@@ -2,7 +2,7 @@ mutation CreateSchule {
   create_schule(input_args:{
     name:"Hogwarts"
     ort:"Tomorroawland",
-    plz:7777,
+    plz:8888,
     adresse_1:"Captain Hook Ship",
     adresse_2:"Deck 2",
     tel_g:"123456789",
@@ -11,6 +11,16 @@ mutation CreateSchule {
     email_2:"wendy@pan.com"
   }){
     ok
-    id
+    schule {
+      id
+      name
+      adresse{
+        ort
+        plz
+        adresse_1
+        tel_g
+        email_1
+      }
+    }
   }
 }

@@ -1,6 +1,8 @@
 import graphene
 from graphene import InputObjectType
 
+from api.types.schule import Schule
+from api.types.schule.mapper import SchuleMapper
 from repositories.adressen_repository import AdressenRepository
 from repositories.schulen_repository import SchulenRepository
 
@@ -22,7 +24,7 @@ class CreateSchuleMutation(graphene.Mutation):
         input_args = CreateSchuleInput()
 
     ok = graphene.Boolean()
-    id = graphene.ID()
+    schule = graphene.Field(Schule)
 
     @classmethod
     async def mutate(cls, context, info, input_args: CreateSchuleInput):
@@ -41,5 +43,5 @@ class CreateSchuleMutation(graphene.Mutation):
             input_args.name,
             db_adresse.id
         )
-
-        return CreateSchuleMutation(id=db_schule.id, ok=True)
+        gql_schule = SchuleMapper.to_gql_schule(db_schule)
+        return CreateSchuleMutation(schule=gql_schule, ok=True)
