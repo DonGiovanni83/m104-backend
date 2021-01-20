@@ -28,6 +28,14 @@ class CreateSchuleMutation(graphene.Mutation):
 
     @classmethod
     async def mutate(cls, context, info, input_args: CreateSchuleInput):
+        """
+        Creates a Schule entity. If adress did not exist it is also created.
+        Behaviour is idempotent.
+        :param context:
+        :param info:
+        :param input_args:
+        :return:
+        """
         db_adresse = await AdressenRepository.get_instance().create(
             input_args.ort,
             input_args.plz,

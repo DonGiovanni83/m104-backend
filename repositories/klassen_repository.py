@@ -22,7 +22,7 @@ class KlassenRepository(BaseRepository):
                     KlassenRepository()
         return KlassenRepository.__instance
 
-    async def create(self, name, schule_id) -> Klasse:
+    async def create(self, name, schule_id):
         db_session = await database.get_session()
         async with db_session as session:
             async with session.begin():
@@ -35,4 +35,12 @@ class KlassenRepository(BaseRepository):
                     kl = Klasse(name=name, schule_id=schule_id)
                     session.add(kl)
                     await session.flush()
-            return kl[0]
+                    # reselect everything so fields are loaded
+                    kl = (await session.execute(
+                        statement=select(Klasse).where(
+                            Klasse.id == kl.id
+                        )
+                    )).first()
+
+                session.expunge_all()
+                return kl[0]

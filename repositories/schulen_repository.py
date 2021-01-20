@@ -49,7 +49,6 @@ class SchulenRepository(BaseRepository):
                     )).first()
 
                 session.expunge_all()
-
                 return sch[0]
 
     async def get_all(self):
