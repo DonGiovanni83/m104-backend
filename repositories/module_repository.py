@@ -22,18 +22,25 @@ class ModuleRepository(BaseRepository):
                     ModuleRepository()
         return ModuleRepository.__instance
 
-    async def create(self, name, schule_id) -> Modul:
+    async def create(self, name, schule_id):
         db_session = await database.get_session()
         async with db_session as session:
             async with session.begin():
-                md = await session.execute(statement=select(Modul).where(
-                    Modul.name == name and
+                md = (await session.execute(statement=select(Modul).where(
+                    Modul.name == name,
                     Modul.schule_id == schule_id
-                ).first())
+                ))).first()
 
                 if md is None:
                     md = Modul(name=name, schule_id=schule_id)
                     session.add(md)
                     await session.flush()
+                    # reselect everything so fields are loaded
+                    md = (await session.execute(
+                        statement=select(Modul).where(
+                            Modul.id == md.id
+                        )
+                    )).first()
 
-            return md[0]
+                session.expunge_all()
+                return md[0]

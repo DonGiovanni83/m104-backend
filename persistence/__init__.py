@@ -40,6 +40,7 @@ class Schule(Base):
 
     klassen = relationship("Klasse")
 
+
 class Klasse(Base):
     __tablename__ = 'klasse'
 
@@ -54,6 +55,8 @@ class Modul(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     schule_id = Column(Integer, ForeignKey('schule.id'))
+    schule = relationship("Schule", lazy="joined")
+
 
 
 class Firma(Base):
