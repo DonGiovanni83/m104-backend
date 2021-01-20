@@ -50,5 +50,7 @@ class AdressenRepository(BaseRepository):
                     )
                     session.add(addr)
                     await session.flush()
+                else:
+                    addr = addr[0]
                 session.expunge_all()
-                return addr[0]
+                return addr

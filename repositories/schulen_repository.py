@@ -26,10 +26,13 @@ class SchulenRepository(BaseRepository):
         db_session = await database.get_session()
         async with db_session as session:
             async with session.begin():
-                sch = (await session.execute(statement=select(Schule).where(
-                    Schule.name == name,
-                    Schule.adresse_id == adresse_id
-                ).join(Adresse))).first()
+                sch = (
+                    await session.execute(
+                        statement=select(Schule).where(
+                            Schule.name == name,
+                            Schule.adresse_id == adresse_id
+                        ))
+                ).first()
 
                 if sch is None:
                     sch = Schule(
@@ -37,11 +40,18 @@ class SchulenRepository(BaseRepository):
                         adresse_id=adresse_id
                     )
                     session.add(sch)
-                    await session.commit()
+                    await session.flush()
+                    # reselect it with adress loaded
+                    sch = (await session.execute(
+                        statement=select(Schule).where(
+                            Schule.id == sch.id
+                        )
+                    )).first()
+
                 session.expunge_all()
 
                 return sch[0]
-            
+
     async def get_all(self):
         db_session = await database.get_session()
         async with db_session as session:
