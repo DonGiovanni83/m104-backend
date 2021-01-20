@@ -38,7 +38,7 @@ class AdressenRepository(BaseRepository):
                 ))).first()
 
                 if addr is None:
-                    new_addr = Adresse(
+                    addr = Adresse(
                         ort=ort,
                         plz=plz,
                         adresse_1=adresse_1,
@@ -48,8 +48,7 @@ class AdressenRepository(BaseRepository):
                         email_1=email_1,
                         email_2=email_2
                     )
-                    session.add(new_addr)
+                    session.add(addr)
                     await session.commit()
-                    addr = new_addr
                 session.expunge_all()
                 return addr[0]

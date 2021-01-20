@@ -1,5 +1,6 @@
-mutation CreateAdresse {
-  create_adresse(input_args:{
+mutation CreateSchule {
+  create_schule(input_args:{
+    name:"Hogwarts"
     ort:"Tomorroawland",
     plz:7777,
     adresse_1:"Captain Hook Ship",

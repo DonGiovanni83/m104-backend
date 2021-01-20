@@ -28,6 +28,7 @@ class Query(
 
 class Mutation(graphene.ObjectType):
     create_adresse = CreateAdresseMutation.Field()
+    create_schule = CreateSchuleMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation, auto_camelcase=False)

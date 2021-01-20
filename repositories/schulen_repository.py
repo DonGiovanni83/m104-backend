@@ -1,6 +1,8 @@
 import threading
 
-from persistence import Schule, database
+from sqlalchemy import select
+
+from persistence import Schule, database, Adresse
 from repositories.base_repository import BaseRepository
 
 
@@ -20,16 +22,30 @@ class SchulenRepository(BaseRepository):
                     SchulenRepository()
         return SchulenRepository.__instance
 
-    async def create(self, name, adresse_id) -> Schule:
-        async with database.get_session() as session:
+    async def create(self, name, adresse_id):
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                sch = await session.query(Schule).filter(
+                sch = (await session.execute(statement=select(Schule).where(
                     Schule.name == name,
                     Schule.adresse_id == adresse_id
-                ).scalar()
+                ).join(Adresse))).first()
 
                 if sch is None:
-                    new_schule = Schule(name, adresse_id)
-                    sch = await session.add(new_schule)
+                    sch = Schule(
+                        name=name,
+                        adresse_id=adresse_id
+                    )
+                    session.add(sch)
+                    await session.commit()
+                session.expunge_all()
 
-                return sch
+                return sch[0]
+            
+    async def get_all(self):
+        db_session = await database.get_session()
+        async with db_session as session:
+            async with session.begin():
+                all_schulen = await session.execute(statement=select(Schule).join(Adresse))
+                session.expunge_all()
+                return all_schulen

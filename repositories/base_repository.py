@@ -22,6 +22,7 @@ class BaseRepository(ABC):
         async with db_session as session:
             async with session.begin():
                 all_entities = await session.execute(statement=select(self.T))
+                session.expunge_all()
                 return all_entities
 
     async def find(self, entity_id) -> T:

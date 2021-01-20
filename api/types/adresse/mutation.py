@@ -1,8 +1,6 @@
 import graphene
 from graphene import InputObjectType
 
-from api.types.adresse import Adresse
-from api.types.adresse.mapper import AdresseMapper
 from repositories.adressen_repository import AdressenRepository
 
 
@@ -22,7 +20,7 @@ class CreateAdresseMutation(graphene.Mutation):
         input_args = CreateAdresseInput()
 
     ok = graphene.Boolean()
-    adresse = graphene.Field(lambda: Adresse)
+    id = graphene.ID()
 
     @classmethod
     async def mutate(cls, context, info, input_args: CreateAdresseInput):
@@ -37,6 +35,4 @@ class CreateAdresseMutation(graphene.Mutation):
             input_args.email_2
         )
 
-        adresse = AdresseMapper.to_gql_adresse(adresse)
-            
-        return CreateAdresseMutation(adresse=adresse, ok=True)
+        return CreateAdresseMutation(id=adresse.id, ok=True)
