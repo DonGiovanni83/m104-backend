@@ -18,7 +18,8 @@ class Adresse(Base):
     email_1 = Column(String(50), nullable=True)
     email_2 = Column(String(50), nullable=True)
 
-    schule = relationship("Schule")
+    schulen = relationship("Schule")
+    firmen = relationship("Firma")
 
 
 class Person(Base):
@@ -64,6 +65,7 @@ class Firma(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     adresse_id = Column(Integer, ForeignKey('adresse.id'))
+    adresse = relationship("Adresse", lazy="joined")
 
 
 class ABV(Person):
