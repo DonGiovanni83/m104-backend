@@ -26,12 +26,13 @@ class BaseRepository(ABC):
                 return all_entities
 
     async def find(self, entity_id) -> T:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                entity = await session.query(self.T).filetr(self.T.id == entity_id).scalar()
+                entity = (await session.execute(statement=select(self.T).where(self.T.id == entity_id))).first()
                 if entity is None:
                     raise NotFoundException()
-                return entity
+                return entity[0]
 
     @abstractmethod
     async def create(self, *args) -> T:

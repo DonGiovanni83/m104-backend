@@ -1,6 +1,7 @@
 import threading
 
 from sqlalchemy import select
+
 from persistence import Modul, database
 from repositories.base_repository import BaseRepository
 
@@ -22,7 +23,8 @@ class ModuleRepository(BaseRepository):
         return ModuleRepository.__instance
 
     async def create(self, name, schule_id) -> Modul:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
                 md = await session.execute(statement=select(Modul).where(
                     Modul.name == name and
@@ -30,7 +32,8 @@ class ModuleRepository(BaseRepository):
                 ).first())
 
                 if md is None:
-                    new_modul = Modul(name, schule_id)
-                    md = await session.add(new_modul)
+                    md = Modul(name=name, schule_id=schule_id)
+                    session.add(md)
+                    await session.flush()
 
-            return md
+            return md[0]

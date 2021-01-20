@@ -49,6 +49,6 @@ class AdressenRepository(BaseRepository):
                         email_2=email_2
                     )
                     session.add(addr)
-                    await session.commit()
+                    await session.flush()
                 session.expunge_all()
                 return addr[0]

@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import ABV, database
 from repositories.base_repository import BaseRepository
 
@@ -21,15 +23,19 @@ class ABVsRepository(BaseRepository):
         return ABVsRepository.__instance
 
     async def create(self, person_id, firma_id) -> ABV:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                abv = await session.query(ABV).filter(
+                # TODO Fix create logic. makes no sense like that
+                abv = (await session.execute(statement=select(ABV).where(
                     ABV.id == person_id,
                     ABV.firmen_id == firma_id
-                ).scalar()
+                ))).first()
 
                 if abv is None:
-                    new_abv = ABV(person_id, firma_id)
-                    abv = await session.add(new_abv)
+                    abv = ABV(person_id=person_id, firma_id=firma_id)
+                    session.add(abv)
+                    await session.flush()
 
-                return abv
+                session.expunge_all()
+                return abv[0]

@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import database, Schueler
 from repositories.base_repository import BaseRepository
 
@@ -21,21 +23,23 @@ class SchuelerRepository(BaseRepository):
         return SchuelerRepository.__instance
 
     async def create(self, person_id, schueler_id, firma_id, abv_id, klasse_id) -> Schueler:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                schueler = await session.query(Schueler).filter(
+                schueler = (await session.execute(statement=select(Schueler).where(
                     # should already be a primary key and therefore unique
                     Schueler.schueler_id == schueler_id
-                ).scalar()
+                ))).first()
 
                 if schueler is None:
-                    new_schueler = Schueler(
+                    schueler = Schueler(
                         person_id,
                         schueler_id,
                         firma_id,
                         abv_id,
                         klasse_id
                     )
-                    schueler = await session.add(new_schueler)
+                    session.add(schueler)
+                    await session.flush()
 
-                return schueler
+                return schueler[0]

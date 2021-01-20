@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import Person, database
 from repositories.base_repository import BaseRepository
 
@@ -21,16 +23,18 @@ class PersonenRepository(BaseRepository):
         return PersonenRepository.__instance
 
     async def create(self, name, vorname, adresse_id) -> Person:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                prs = await session.query(Person).filter(
+                prs = (await session.execute(statement=select(Person).where(
                     Person.name == name,
                     Person.vorname == vorname,
                     Person.adresse_id == adresse_id
-                ).scalar()
+                ))).first()
 
                 if prs is None:
-                    new_person = Person(name, vorname, adresse_id)
-                    sch = await session.add(new_person)
+                    prs = Person(name=name, vorname=vorname, adresse_id=adresse_id)
+                    session.add(prs)
+                    await session.flush()
 
-                return sch
+                return prs[0]

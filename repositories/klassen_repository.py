@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import Klasse, database
 from repositories.base_repository import BaseRepository
 
@@ -21,15 +23,16 @@ class KlassenRepository(BaseRepository):
         return KlassenRepository.__instance
 
     async def create(self, name, schule_id) -> Klasse:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                kl = await session.query(Klasse).filetr(
+                kl = (await session.execute(statement=select(Klasse).where(
                     Klasse.name == name,
                     Klasse.schule_id == schule_id
-                ).scalar()
+                ))).first()
 
                 if kl is None:
-                    new_klasse = Klasse(name, schule_id)
-                    kl = await session.add(new_klasse)
-
-            return kl
+                    kl = Klasse(name=name, schule_id=schule_id)
+                    session.add(kl)
+                    await session.flush()
+            return kl[0]

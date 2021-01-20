@@ -1,5 +1,7 @@
 import threading
 
+from sqlalchemy import select
+
 from persistence import Firma, database
 from repositories.base_repository import BaseRepository
 
@@ -21,15 +23,17 @@ class FirmenRepository(BaseRepository):
         return FirmenRepository.__instance
 
     async def create(self, name, adresse_id) -> Firma:
-        async with database.get_session() as session:
+        db_session = await database.get_session()
+        async with db_session as session:
             async with session.begin():
-                firma = await session.query(Firma).filter(
+                firma = (await session.execute(statement=select(Firma).where(
                     Firma.name == name,
                     Firma.adresse_id == adresse_id
-                ).scalar()
+                ))).first()
 
                 if firma is None:
-                    new_firma = Firma(name, adresse_id)
-                    firma = await session.add(new_firma)
+                    firma = Firma(name=name, adresse_id=adresse_id)
+                    session.add(firma)
+                    await session.flush()
 
-                return firma
+                return firma[0]
